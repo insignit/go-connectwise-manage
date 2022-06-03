@@ -92,11 +92,11 @@ func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) 
 func (c CWClient) GetSystemInfo(options ...CWRequestOption) (info SystemInfo, err error) {
 	j, err := c.Get("/system/info", options...)
 	if err != nil {
-		return info, fmt.Errorf("Can't get system info %w", err)
+		return info, fmt.Errorf("Can't get system info %v", err)
 	}
 	err = json.Unmarshal(j, &info)
 	if err != nil {
-		return info, fmt.Errorf("Can't get unmarshal data %w", err)
+		return info, fmt.Errorf("Can't get unmarshal data %v", err)
 	}
 	return info, nil
 }
@@ -175,7 +175,7 @@ func (c CWClient) Get(path string, options ...CWRequestOption) (jsonData []byte,
 	return jsonData, nil
 }
 
-// NewCWClient create a new ConnectWise client
+// NewCWClient create a new ConnectWise client.
 func NewCWClient(site string, clientId string, company string, publicKey string, privateKey string) (client CWClient, err error) {
 	apiVersion, err := GetApiVersion(site, company)
 	if err != nil {
@@ -191,8 +191,8 @@ func NewCWClient(site string, clientId string, company string, publicKey string,
 	return
 }
 
-// GetAPIVersion will dynamically get the API version for this client, all that
-// is required is the site and company, no authentication is needed at this point
+// GetAPIVersion will dynamically get the API version for this client, all that.
+// is required is the site and company, no authentication is needed at this point.
 func GetApiVersion(site string, company string) (version APIVersion, err error) {
 	url := fmt.Sprintf("https://%s/login/companyinfo/%s", site, company)
 
@@ -209,7 +209,7 @@ func GetApiVersion(site string, company string) (version APIVersion, err error) 
 
 	err = json.Unmarshal(body, &version)
 	if err != nil {
-		return version, fmt.Errorf("Can't get unmarshal data %w", err)
+		return version, fmt.Errorf("Can't get unmarshal data %v", err)
 	}
 
 	return
