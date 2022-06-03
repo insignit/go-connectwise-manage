@@ -1,13 +1,11 @@
 package schedule
 
-// HolidayListReference is a struct representing JSON data returned from ConnectWise.
 type HolidayListReference struct {
 	Id   int32             `json:"id"`
 	Name string            `json:"string"`
 	Info map[string]string `json:"_info"`
 }
 
-// Calendar is a struct representing JSON data returned from ConnectWise.
 type Calendar struct {
 	Id                 int32                `json:"id"`
 	Name               string               `json:"name"`
@@ -29,7 +27,12 @@ type Calendar struct {
 	Info               map[string]string    `json:"_info"`
 }
 
-// MemberReference is a struct representing JSON data returned from ConnectWise.
+type CalendarInfo struct {
+	Id   int32             `json:"id"`
+	Name string            `json:"name"`
+	Info map[string]string `json:"_info"`
+}
+
 type MemberReference struct {
 	Id         int32             `json:"id"`
 	Identifier string            `json:"identifier"`
@@ -37,42 +40,36 @@ type MemberReference struct {
 	Info       map[string]string `json:"_info"`
 }
 
-// ServiceLocationReference is a struct representing JSON data returned from ConnectWise.
 type ServiceLocationReference struct {
 	Id   int32             `json:"id"`
 	Name string            `json:"name"`
 	Info map[string]string `json:"_info"`
 }
 
-// ReminderReference is a struct representing JSON data returned from ConnectWise.
 type ReminderReference struct {
 	Id   int32             `json:"id"`
 	Name string            `json:"name"`
 	Info map[string]string `json:"_info"`
 }
 
-// ScheduleStatusReference is a struct representing JSON data returned from ConnectWise.
 type ScheduleStatusReference struct {
 	Id   int32             `json:"id"`
 	Name string            `json:"name"`
 	Info map[string]string `json:"_info"`
 }
 
-// ScheduleTypeReference is a struct representing JSON data returned from ConnectWise.
 type ScheduleTypeReference struct {
 	Id   int32             `json:"id"`
 	Name string            `json:"name"`
 	Info map[string]string `json:"_info"`
 }
 
-// ScheduleSpanReference is a struct representing JSON data returned from ConnectWise.
 type ScheduleSpanReference struct {
 	Id         int32             `json:"id"`
 	Identifier string            `json:"identifier"`
 	Info       map[string]string `json:"_info"`
 }
 
-// ScheduleEntry is a struct representing JSON data returned from ConnectWise.
 type ScheduleEntry struct {
 	Id                         int32                    `json:"id"`
 	ObjectId                   int32                    `json:"objectId"`
@@ -97,4 +94,25 @@ type ScheduleEntry struct {
 	CloseDate                  string                   `json:"closeDate"`
 	Hours                      float32                  `json:"hours"`
 	Info                       map[string]string        `json:"_info"`
+}
+
+type Usage struct {
+	Type        string `json:"type"`
+	Count       int32  `json:"count"`
+	Id          int32  `json:"id"`
+	Description string `json:"description"`
+	Hyperlink   string `json:"hyperlink"`
+	TypeKey     string `json:"typeKey"`
+}
+
+type ScheduleColor struct {
+	Id           int32             `json:"id"`
+	StartPercent int32             `json:"startPercent"`
+	EndPercent   int32             `json:"enPercent"`
+	Color        string            `json:"color"`
+	Info         map[string]string `json:"_info"`
+}
+
+type Count struct {
+	Count int32 `json:"count"`
 }

@@ -42,6 +42,12 @@ type CWRequestOption struct {
 	Value string
 }
 
+type PatchOperation struct {
+	Operation string `json:"op"`
+	Path      string `json:"path"`
+	Value     string `json:"value"`
+}
+
 // Post is an API primitive to post data to the ConnectWise API.
 func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) (string, error) {
 	baseURL := fmt.Sprintf("https://%s/%sapis/3.0", c.APIVersion.SiteUrl, c.APIVersion.Codebase)
@@ -84,6 +90,53 @@ func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) 
 		return "", fmt.Errorf("Non-201 status: Code: %d Status: %s Message: %s", resp.StatusCode, resp.Status, body)
 	}
 	return string(body), nil
+}
+
+func (c CWClient) Patch(path string, operation []PatchOperation, options ...CWRequestOption) (jsonData []byte, err error) {
+	baseURL := fmt.Sprintf("https://%s/%sapis/3.0", c.APIVersion.SiteUrl, c.APIVersion.Codebase)
+	url := fmt.Sprintf("%s/%s", baseURL, path)
+	client := &http.Client{}
+
+	// Setup the patch request.
+	payload, err := json.Marshal(operation)
+	if err != nil {
+		return
+	}
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(payload))
+	if err != nil {
+		return
+	}
+
+	// Authorization.
+	q := req.URL.Query()
+	q.Add("clientId", c.ClientID)
+
+	req.SetBasicAuth(fmt.Sprintf("%s+%s", c.CompanyID, c.PublicKey), c.PrivateKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Query parameters.
+	if len(options) > 0 {
+		for _, opt := range options {
+			q.Add(opt.Key, opt.Value)
+		}
+	}
+	req.URL.RawQuery = q.Encode()
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	if resp.StatusCode != 200 {
+		return jsonData, fmt.Errorf("Non-200 status: Code: %d Status: %s Message: %s", resp.StatusCode, resp.Status, body)
+	}
+	return body, nil
 }
 
 // GetSystemInfo will retrieve the needed system info from ConnectWise.

@@ -25,7 +25,6 @@ func NewScheduleAPI(site string, clientId string, company string, publicKey stri
 
 //* ScheduleCalendars
 
-// GetScheduleCalendars returns all schedule calendars from ConnectWise
 func (s ScheduleAPI) GetScheduleCalendars(options ...cwm.CWRequestOption) (calendars []Calendar, err error) {
 	j, err := s.client.Get("/schedule/calendars", options...)
 	if err != nil {
@@ -38,7 +37,6 @@ func (s ScheduleAPI) GetScheduleCalendars(options ...cwm.CWRequestOption) (calen
 	return
 }
 
-// PostScheduleCalendars creates a schedule calendar in ConnectWise
 func (s ScheduleAPI) PostScheduleCalendars(calendar Calendar, options ...cwm.CWRequestOption) (returnCalendar Calendar, err error) {
 	body, err := json.Marshal(calendar)
 	if err != nil {
@@ -55,7 +53,6 @@ func (s ScheduleAPI) PostScheduleCalendars(calendar Calendar, options ...cwm.CWR
 	return
 }
 
-// GetScheduleCalendarsById returns a specific schedule calendar from ConnectWise by id
 func (s ScheduleAPI) GetScheduleCalendarsById(id string, options ...cwm.CWRequestOption) (calendars Calendar, err error) {
 	j, err := s.client.Get(fmt.Sprintf("/schedule/calendars/%s", id), options...)
 	if err != nil {
@@ -68,9 +65,130 @@ func (s ScheduleAPI) GetScheduleCalendarsById(id string, options ...cwm.CWReques
 	return
 }
 
+func (s ScheduleAPI) PostScheduleCalendarByIdCopy(id string, options ...cwm.CWRequestOption) (calendars Calendar, err error) {
+	j, err := s.client.Post(fmt.Sprintf("/schedule/calendars/%s/copy", id), []byte{}, options...)
+	if err != nil {
+		return calendars, fmt.Errorf("Cannot copying schedule calendars: %v", err)
+	}
+	err = json.Unmarshal([]byte(j), &calendars)
+	if err != nil {
+		return calendars, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsByIdInfo(id string, options ...cwm.CWRequestOption) (calendarInfo CalendarInfo, err error) {
+	j, err := s.client.Get(fmt.Sprintf("/schedule/calendars/%s/info", id), options...)
+	if err != nil {
+		return calendarInfo, fmt.Errorf("Cannot retrieve schedule calendar info: %v", err)
+	}
+	err = json.Unmarshal(j, &calendarInfo)
+	if err != nil {
+		return calendarInfo, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsByIdUsages(id string, options ...cwm.CWRequestOption) (usage Usage, err error) {
+	j, err := s.client.Get(fmt.Sprintf("/schedule/calendars/%s/usages", id), options...)
+	if err != nil {
+		return usage, fmt.Errorf("Cannot retrieve schedule calendar usages: %v", err)
+	}
+	err = json.Unmarshal(j, &usage)
+	if err != nil {
+		return usage, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsByIdUsagesList(id string, options ...cwm.CWRequestOption) (usage []Usage, err error) {
+	j, err := s.client.Get(fmt.Sprintf("/schedule/calendars/%s/usages/list", id), options...)
+	if err != nil {
+		return usage, fmt.Errorf("Cannot retrieve schedule calendar usages list: %v", err)
+	}
+	err = json.Unmarshal(j, &usage)
+	if err != nil {
+		return usage, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsCount(options ...cwm.CWRequestOption) (count Count, err error) {
+	j, err := s.client.Get("/schedule/calendars/count", options...)
+	if err != nil {
+		return count, fmt.Errorf("Cannot retrieve schedule calendars count: %v", err)
+	}
+	err = json.Unmarshal(j, &count)
+	if err != nil {
+		return count, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsInfo(options ...cwm.CWRequestOption) (calendarInfo []CalendarInfo, err error) {
+	j, err := s.client.Get("/schedule/calendars/info", options...)
+	if err != nil {
+		return calendarInfo, fmt.Errorf("Cannot retrieve schedule calendar info: %v", err)
+	}
+	err = json.Unmarshal(j, &calendarInfo)
+	if err != nil {
+		return calendarInfo, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleCalendarsInfoCount(options ...cwm.CWRequestOption) (count Count, err error) {
+	j, err := s.client.Get("/schedule/calendars/info/count", options...)
+	if err != nil {
+		return count, fmt.Errorf("Cannot retrieve schedule calendar info: %v", err)
+	}
+	err = json.Unmarshal(j, &count)
+	if err != nil {
+		return count, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+//* ScheduleColors
+
+func (s ScheduleAPI) GetScheduleColors(options ...cwm.CWRequestOption) (color []ScheduleColor, err error) {
+	j, err := s.client.Get("/schedule/colors", options...)
+	if err != nil {
+		return color, fmt.Errorf("Cannot retrieve schedule colors: %v", err)
+	}
+	err = json.Unmarshal(j, &color)
+	if err != nil {
+		return color, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) GetScheduleColorsById(id string, options ...cwm.CWRequestOption) (color ScheduleColor, err error) {
+	j, err := s.client.Get(fmt.Sprintf("/schedule/colors/%s", id), options...)
+	if err != nil {
+		return color, fmt.Errorf("Cannot retrieve schedule color by id: %v", err)
+	}
+	err = json.Unmarshal(j, &color)
+	if err != nil {
+		return color, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) PostScheduleColorsByIdClear(id string, options ...cwm.CWRequestOption) (color ScheduleColor, err error) {
+	j, err := s.client.Post(fmt.Sprintf("/schedule/colors/%s/clear", id), []byte{}, options...)
+	if err != nil {
+		return color, fmt.Errorf("Cannot clearing schedule color: %v", err)
+	}
+	err = json.Unmarshal([]byte(j), &color)
+	if err != nil {
+		return color, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
 //* ScheduleEntries
 
-// GetScheduleEntries returns all schedule entries from ConnectWise
 func (s ScheduleAPI) GetScheduleEntries(options ...cwm.CWRequestOption) (entries []ScheduleEntry, err error) {
 	j, err := s.client.Get("/schedule/entries", options...)
 	if err != nil {
@@ -83,7 +201,6 @@ func (s ScheduleAPI) GetScheduleEntries(options ...cwm.CWRequestOption) (entries
 	return
 }
 
-// PostScheduleEntries create a schedule entry within ConnectWise
 func (s ScheduleAPI) PostScheduleEntries(entry ScheduleEntry, options ...cwm.CWRequestOption) (returnEntry ScheduleEntry, err error) {
 	body, err := json.Marshal(entry)
 	if err != nil {
@@ -100,7 +217,6 @@ func (s ScheduleAPI) PostScheduleEntries(entry ScheduleEntry, options ...cwm.CWR
 	return
 }
 
-// GetScheduleEntriesById returns a specific schedule entry from ConnectWise by id
 func (s ScheduleAPI) GetScheduleEntriesById(id string, options ...cwm.CWRequestOption) (entry ScheduleEntry, err error) {
 	j, err := s.client.Get(fmt.Sprintf("/schedule/entries/%s", id), options...)
 	if err != nil {
@@ -109,6 +225,18 @@ func (s ScheduleAPI) GetScheduleEntriesById(id string, options ...cwm.CWRequestO
 	err = json.Unmarshal(j, &entry)
 	if err != nil {
 		return entry, fmt.Errorf("Can't get unmarshal data %v", err)
+	}
+	return
+}
+
+func (s ScheduleAPI) PatchScheduleEntriesById(id string, operations []cwm.PatchOperation, options ...cwm.CWRequestOption) (returnEntry ScheduleEntry, err error) {
+	r, err := s.client.Patch(fmt.Sprintf("/schedule/entries/%s", id), operations, options...)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal([]byte(r), &returnEntry)
+	if err != nil {
+		return returnEntry, fmt.Errorf("Can't get unmarshal data %v", err)
 	}
 	return
 }
