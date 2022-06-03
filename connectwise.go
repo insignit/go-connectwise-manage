@@ -56,7 +56,9 @@ func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) 
 	}
 
 	// Authorization.
-	req.Header.Set("ClientID", c.ClientID)
+	q := req.URL.Query()
+	q.Add("clientId", c.ClientID)
+
 	auth := fmt.Sprintf("%s+%s:%s", c.CompanyID, c.PublicKey, c.PrivateKey)
 	encoded := base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", encoded))
@@ -64,12 +66,11 @@ func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) 
 
 	// Query parameters.
 	if len(options) > 0 {
-		q := req.URL.Query()
 		for _, opt := range options {
 			q.Add(opt.Key, opt.Value)
 		}
-		req.URL.RawQuery = q.Encode()
 	}
+	req.URL.RawQuery = q.Encode()
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -144,19 +145,20 @@ func (c CWClient) Get(path string, options ...CWRequestOption) (jsonData []byte,
 	}
 
 	// Authentication.
-	req.Header.Set("ClientID", c.ClientID)
+	q := req.URL.Query()
+	q.Add("clientId", c.ClientID)
+
 	auth := fmt.Sprintf("%s+%s:%s", c.CompanyID, c.PublicKey, c.PrivateKey)
 	encoded := base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", encoded))
 
 	// Query parameters.
 	if len(options) > 0 {
-		q := req.URL.Query()
 		for _, opt := range options {
 			q.Add(opt.Key, opt.Value)
 		}
-		req.URL.RawQuery = q.Encode()
 	}
+	req.URL.RawQuery = q.Encode()
 
 	resp, err := client.Do(req)
 	if err != nil {
