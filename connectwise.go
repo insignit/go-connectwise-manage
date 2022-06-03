@@ -2,7 +2,6 @@ package go_connectwise_manage
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -59,9 +58,7 @@ func (c CWClient) Post(path string, payload []byte, options ...CWRequestOption) 
 	q := req.URL.Query()
 	q.Add("clientId", c.ClientID)
 
-	auth := fmt.Sprintf("%s+%s:%s", c.CompanyID, c.PublicKey, c.PrivateKey)
-	encoded := base64.StdEncoding.EncodeToString([]byte(auth))
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", encoded))
+	req.SetBasicAuth(fmt.Sprintf("%s+%s", c.CompanyID, c.PublicKey), c.PrivateKey)
 	req.Header.Set("Content-Type", "application/json")
 
 	// Query parameters.
@@ -148,9 +145,7 @@ func (c CWClient) Get(path string, options ...CWRequestOption) (jsonData []byte,
 	q := req.URL.Query()
 	q.Add("clientId", c.ClientID)
 
-	auth := fmt.Sprintf("%s+%s:%s", c.CompanyID, c.PublicKey, c.PrivateKey)
-	encoded := base64.StdEncoding.EncodeToString([]byte(auth))
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", encoded))
+	req.SetBasicAuth(fmt.Sprintf("%s+%s", c.CompanyID, c.PublicKey), c.PrivateKey)
 
 	// Query parameters.
 	if len(options) > 0 {
